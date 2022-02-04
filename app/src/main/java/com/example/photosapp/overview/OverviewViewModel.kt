@@ -77,7 +77,9 @@ class OverviewViewModel(
                         } catch (e: IOException) { }
                        // photoRepository.insertPhotos(listResult)
                     }
-                }
+                } else {
+                _status.value = ApiStatus.ERROR
+            }
 
 
 //            try {
