@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.domain.Photo
+import com.example.data.database.model.PhotoDatabase
 
-@Database(entities = [Photo::class], version = 3, exportSchema = false)
+@Database(entities = [PhotoDatabase::class], version = 3, exportSchema = false)
 abstract class PhotosDatabase : RoomDatabase() {
 
     abstract val photoDao: PhotoDao

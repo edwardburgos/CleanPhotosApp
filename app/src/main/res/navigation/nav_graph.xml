@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="selectedPhoto"
-            app:argType="com.example.domain.Photo"/>
+            app:argType="com.example.data.network.model.PhotoApi"/>
     </fragment>
 
 </navigation>

@@ -15,6 +15,6 @@ val presentationModule = module {
     factory { (binding: PhotoExtendedItemBinding) -> PhotosExtendedViewHolder(binding) }
     factory { (binding: PhotoItemBinding) -> ViewHolders.PhotoViewHolder(binding) }
     factory { (binding: PhotoItemOptionalBinding) -> ViewHolders.PhotoOptionalViewHolder(binding) }
-    viewModel { OverviewViewModel(androidApplication(), get(), get()) }
-    viewModel { DetailViewModel(androidApplication(), get()) }
+    viewModel { OverviewViewModel(androidApplication(), get(), get(), get(), get(), get()) }
+    viewModel { DetailViewModel(androidApplication(), get(), get()) }
 }

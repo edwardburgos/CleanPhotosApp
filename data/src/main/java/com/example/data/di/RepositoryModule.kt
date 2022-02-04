@@ -4,5 +4,5 @@ import com.example.data.repository.PhotoRepositoryImpl
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { PhotoRepositoryImpl(get(), get()) }
+    single { PhotoRepositoryImpl(get(), get(), get()) }
 }

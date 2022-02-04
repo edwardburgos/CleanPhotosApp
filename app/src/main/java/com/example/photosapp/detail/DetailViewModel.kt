@@ -2,12 +2,16 @@ package com.example.photosapp.detail
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.data.database.model.PhotoDatabase
+import com.example.data.database.model.PhotoDatabaseMapper
 import com.example.domain.ApiStatus
 import com.example.domain.Photo
 import com.example.usecases.photo.getphotos.GetPhotosDatabaseUseCaseImpl
 import kotlinx.coroutines.*
 
-class DetailViewModel(app: Application, private val getPhotosDatabase: GetPhotosDatabaseUseCaseImpl) : //val photoRepository: PhotoRepositoryImpl
+class DetailViewModel(app: Application,
+                      private val getPhotosDatabase: GetPhotosDatabaseUseCaseImpl,
+                      private val databaseMapper: PhotoDatabaseMapper) :
     AndroidViewModel(app) {
 
     var currentPhotoPosition = 0
@@ -26,19 +30,19 @@ class DetailViewModel(app: Application, private val getPhotosDatabase: GetPhotos
 
     fun getPhotosDetail() {
         viewModelScope.launch {
-            lateinit var getPropertiesDeferred: Deferred<List<Photo>>
+            lateinit var getPropertiesDeferred: Deferred<List<PhotoDatabase>>
             withContext(Dispatchers.IO) {
                 getPropertiesDeferred = async { getPhotosDatabase() }
             }
             try {
                 _status.value = ApiStatus.LOADING
-                lateinit var listResult: List<Photo>
+                lateinit var listResult: List<PhotoDatabase>
                 withContext(Dispatchers.IO) {
                     listResult = getPropertiesDeferred.await()
                 }
                 _status.value = ApiStatus.DONE
                 if (listResult.size > 0) {
-                    _photos.value = listResult
+                    _photos.value = databaseMapper.fromEntityList(listResult)
                 } else {
                     _status.value = ApiStatus.ERROR
                 }

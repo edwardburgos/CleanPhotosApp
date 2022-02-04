@@ -2,19 +2,26 @@ package com.example.photosapp.overview
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.data.database.model.PhotoDatabase
+import com.example.data.database.model.PhotoDatabaseMapper
+import com.example.data.network.model.PhotoApi
+import com.example.data.network.model.PhotoApiMapper
 import com.example.domain.ApiStatus
 import com.example.domain.Photo
-import com.example.usecases.photo.getphotos.GetPhotosUseCaseImpl
+import com.example.usecases.photo.getphotos.GetPhotosApiUseCaseImpl
+import com.example.usecases.photo.getphotos.GetPhotosDatabaseUseCaseImpl
 import com.example.usecases.photo.insertphotos.InsertPhotosUseCaseImpl
 import kotlinx.coroutines.*
-import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
 
 class OverviewViewModel(
     app: Application,
-    private val getPhotos: GetPhotosUseCaseImpl,
-    private val insertPhotos: InsertPhotosUseCaseImpl
+    private val getPhotosApi: GetPhotosApiUseCaseImpl,
+    private val getPhotosDatabase: GetPhotosDatabaseUseCaseImpl,
+    private val insertPhotos: InsertPhotosUseCaseImpl,
+    private val apiMapper: PhotoApiMapper,
+    private val databaseMapper: PhotoDatabaseMapper
 ) : AndroidViewModel(app) {
 
     private val _status = MutableLiveData<ApiStatus>()
@@ -25,8 +32,8 @@ class OverviewViewModel(
     val photos: LiveData<List<Photo>>
         get() = _photos
 
-    private val _navigateToSelectedPhoto = MutableLiveData<Photo>()
-    val navigateToSelectedPhoto: LiveData<Photo>
+    private val _navigateToSelectedPhoto = MutableLiveData<PhotoApi>()
+    val navigateToSelectedPhoto: LiveData<PhotoApi>
         get() = _navigateToSelectedPhoto
 
     init {
@@ -35,38 +42,52 @@ class OverviewViewModel(
 
     fun getPhotosOverview(showLoading: Boolean) {
         viewModelScope.launch {
-            lateinit var getPropertiesDeferred: Deferred<List<Photo>>
-            withContext(Dispatchers.IO) {
-                getPropertiesDeferred = async { getPhotos() }
-            }
             try {
-                if (showLoading) _status.value = ApiStatus.LOADING
-                lateinit var listResult: List<Photo>
                 withContext(Dispatchers.IO) {
-                    listResult = getPropertiesDeferred.await()
+                    val socket = Socket()
+                    socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
+                    socket.close()
                 }
+                lateinit var getPropertiesDeferred: Deferred<List<PhotoApi>>
+                lateinit var listResult: List<PhotoApi>
+                if (showLoading) _status.value = ApiStatus.LOADING
+                withContext(Dispatchers.IO) {
+                    getPropertiesDeferred = async { getPhotosApi() }
+                    listResult = getPropertiesDeferred.await()
+
+                }
+                val convertedListResult = apiMapper.fromEntityList(listResult)
                 _status.value = ApiStatus.DONE
                 if (listResult.size > 0) {
-                    _photos.value = listResult.sortedBy { it.id }.reversed()
+                    _photos.value = convertedListResult.sortedBy { it.id }.reversed()
                     withContext(Dispatchers.IO) {
-                        try {
-                            val socket = Socket()
-                            socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
-                            socket.close()
-                            insertPhotos(listResult)
-                        } catch (e: IOException) { }
+                            insertPhotos(convertedListResult)
                     }
                 } else {
                     _status.value = ApiStatus.ERROR
                 }
             } catch (t: Throwable) {
-                _status.value = ApiStatus.ERROR
+                lateinit var getPropertiesDeferred: Deferred<List<PhotoDatabase>>
+                lateinit var listResult: List<PhotoDatabase>
+                if (showLoading) _status.value = ApiStatus.LOADING
+                withContext(Dispatchers.IO) {
+                    getPropertiesDeferred = async { getPhotosDatabase() }
+                    listResult = getPropertiesDeferred.await()
+
+                }
+                val convertedListResult = databaseMapper.fromEntityList(listResult)
+                _status.value = ApiStatus.DONE
+                if (listResult.size > 0) {
+                    _photos.value = convertedListResult
+                } else {
+                    _status.value = ApiStatus.ERROR
+                }
             }
         }
     }
 
     fun displayPropertyDetails(photo: Photo) {
-        _navigateToSelectedPhoto.value = photo
+        _navigateToSelectedPhoto.value = apiMapper.toEntity(photo)
     }
 
     fun displayPropertyDetailsComplete() {

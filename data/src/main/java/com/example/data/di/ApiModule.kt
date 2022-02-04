@@ -1,6 +1,7 @@
 package com.example.data.di
 
 import com.example.data.network.ApiService
+import com.example.data.network.model.PhotoApiMapper
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -23,4 +24,5 @@ val apiModule = module {
             .build()
             .create(ApiService::class.java)
     }
+    single { PhotoApiMapper() }
 }
