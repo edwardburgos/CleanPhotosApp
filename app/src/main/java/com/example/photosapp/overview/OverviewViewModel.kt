@@ -11,7 +11,7 @@ enum class ApiStatus { LOADING, ERROR, DONE }
 
 class OverviewViewModel(
     app: Application,
-    private val getPhotos: GetPhotosUseCase
+    private val getPhotos: GetPhotosUseCaseImpl
     //,
     //val getPhotos: GetPhotosUseCase
 ) : AndroidViewModel(app) {
@@ -42,11 +42,11 @@ class OverviewViewModel(
                 //val rosa = photoRepository.getPhotos()()
                 //(rosa())
                 println("MAMA")
-                // photoRepository.hola()
+               // photoRepository.hola()
                 getPropertiesDeferred = async {
                     //photoRepository.getPhotosFromApi()
                     //
-                    // photoRepository.getPhotos()
+                // photoRepository.getPhotos()
 
                     getPhotos()
                 }
@@ -55,17 +55,18 @@ class OverviewViewModel(
             }
             if (showLoading) _status.value = ApiStatus.LOADING
             lateinit var listResult: List<Photo>
-            withContext(Dispatchers.IO) {
-                listResult = getPropertiesDeferred.await()
-            }
+                withContext(Dispatchers.IO) {
+                    listResult = getPropertiesDeferred.await()
+                }
             _status.value = ApiStatus.DONE
-//            if (listResult.size > 0) {
-//                _photos.value = listResult.sortedBy { it.id }.reversed()
-//                withContext(Dispatchers.IO) {
-//                    // photoRepository.insertPhotos(listResult)
-//                }
-//            }
-        }
+            if (listResult.size > 0) {
+                    _photos.value = listResult.sortedBy { it.id }.reversed()
+                println("qwwwwwwwwwwwwww")
+//                    withContext(Dispatchers.IO) {
+//                        photoRepository.insertPhotos(listResult)
+//                    }
+                }
+
 
 //            try {
 //                if (showLoading) _status.value = ApiStatus.LOADING
@@ -94,7 +95,7 @@ class OverviewViewModel(
 //                    _status.value = ApiStatus.ERROR
 //                }
 //            }
-       //}
+        }
     }
 
     fun displayPropertyDetails(photo: Photo) {

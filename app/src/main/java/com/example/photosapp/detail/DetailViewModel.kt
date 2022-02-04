@@ -3,12 +3,13 @@ package com.example.photosapp.detail
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.data.repository.PhotoRepository
+import com.example.data.repository.PhotoRepositoryImpl
 import com.example.domain.Photo
 import com.example.photosapp.overview.ApiStatus
 import com.example.usecases.photo.GetPhotosUseCase
 import kotlinx.coroutines.*
 
-class DetailViewModel(app: Application, val photoRepository: PhotoRepository) :
+class DetailViewModel(app: Application, val photoRepository: PhotoRepositoryImpl) :
     AndroidViewModel(app) {
 
     var currentPhotoPosition = 0
