@@ -43,10 +43,7 @@ class DetailFragment : Fragment() {
 
         viewModel.photos.observe(viewLifecycleOwner, Observer {
             if (null != it) {
-                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                    viewModel.currentPhotoPosition,
-                    15
-                )
+                layoutManager?.scrollToPosition(viewModel.currentPhotoPosition)
             }
         })
 
