@@ -62,8 +62,6 @@ class DetailFragment : Fragment() {
         binding.photosSnap.layoutManager?.let {
             snapHelper.findSnapView(it)?.let { position ->
                 viewModel.currentPhotoPosition = it.getPosition(position)
-                println("sábana")
-                println(it.getPosition(position))
             }
         }
         super.onPause()

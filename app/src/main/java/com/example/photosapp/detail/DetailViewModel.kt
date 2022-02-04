@@ -38,7 +38,6 @@ class DetailViewModel(app: Application, private val getPhotosDatabase: GetPhotos
                 }
                 _status.value = ApiStatus.DONE
                 if (listResult.size > 0) {
-                    //println(listResult.sortedBy { it.id }) //.reversed()
                     _photos.value = listResult
                         //.sortedBy { it.id }.reversed()
                 }

@@ -45,7 +45,6 @@ class OverviewViewModel(
             withContext(Dispatchers.IO) {
                 //val rosa = photoRepository.getPhotos()()
                 //(rosa())
-                println("MAMA")
                // photoRepository.hola()
                 getPropertiesDeferred = async {
                     //photoRepository.getPhotosFromApi()
@@ -65,13 +64,11 @@ class OverviewViewModel(
             _status.value = ApiStatus.DONE
             if (listResult.size > 0) {
                     _photos.value = listResult.sortedBy { it.id }.reversed()
-                println("qwwwwwwwwwwwwww")
                     withContext(Dispatchers.IO) {
                         try {
                             val socket = Socket()
                             socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
                             socket.close()
-                            println("fuck el estilo")
                             insertPhotos(listResult)
                             //photoRepository.insertPhotos(listResult)
                         } catch (e: IOException) { }
@@ -90,14 +87,12 @@ class OverviewViewModel(
 //                }
 //                _status.value = ApiStatus.DONE
 //                if (listResult.size > 0) {
-//                    println("ff55")
 //                    _photos.value = listResult.sortedBy { it.id }.reversed()
 //                    withContext(Dispatchers.IO) {
 //                        photoRepository.insertPhotos(listResult)
 //                    }
 //                }
 //            } catch (t: Throwable) {
-//                println("qlq")
 //                lateinit var databasePhotos: List<Photo>
 //                withContext(Dispatchers.IO) {
 //                    databasePhotos = photoRepository.getPhotosFromDatabase()

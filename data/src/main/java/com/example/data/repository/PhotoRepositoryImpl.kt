@@ -18,17 +18,13 @@ class PhotoRepositoryImpl(
     override fun getPhotosFromDatabase() = photoDao.getAllPhotos()
     override fun insertPhotos(photos: List<Photo>) = photoDao.insertAll(photos)
     override suspend fun getPhotos(): List<Photo> {
-        println("Dd")
-        try {
+       try {
             val socket = Socket()
             socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
             socket.close()
-            println("fuck el estilo")
             return apiService.getPhotos(0, 100)
 
         } catch (e: IOException) {
-            println("fuck el estilist")
-            println(e.message)
             return photoDao.getAllPhotos()
         }
     }
