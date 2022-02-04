@@ -1,7 +1,6 @@
 package com.example.data.repository
 
 import com.example.domain.Photo
-import kotlinx.coroutines.Deferred
 
 interface PhotoRepository {
     suspend fun getPhotosFromApi(): List<Photo>

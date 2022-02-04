@@ -23,7 +23,6 @@ class PhotoRepositoryImpl(
             socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
             socket.close()
             return apiService.getPhotos(0, 100)
-
         } catch (e: IOException) {
             return photoDao.getAllPhotos()
         }

@@ -2,8 +2,8 @@ package com.example.photosapp.detail
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.example.domain.ApiStatus
 import com.example.domain.Photo
-import com.example.photosapp.overview.ApiStatus
 import com.example.usecases.photo.getphotos.GetPhotosDatabaseUseCaseImpl
 import kotlinx.coroutines.*
 
@@ -39,7 +39,8 @@ class DetailViewModel(app: Application, private val getPhotosDatabase: GetPhotos
                 _status.value = ApiStatus.DONE
                 if (listResult.size > 0) {
                     _photos.value = listResult
-                        //.sortedBy { it.id }.reversed()
+                } else {
+                    _status.value = ApiStatus.ERROR
                 }
             } catch (t: Throwable) {
                 _status.value = ApiStatus.ERROR
