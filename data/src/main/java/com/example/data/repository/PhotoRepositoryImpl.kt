@@ -28,6 +28,7 @@ class PhotoRepositoryImpl(
 
         } catch (e: IOException) {
             println("fuck el estilist")
+            println(e.message)
             return photoDao.getAllPhotos()
         }
     }

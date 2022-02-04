@@ -1,4 +1,4 @@
-package com.example.usecases.photo
+package com.example.usecases.photo.getphotos
 
 import com.example.domain.Photo
 

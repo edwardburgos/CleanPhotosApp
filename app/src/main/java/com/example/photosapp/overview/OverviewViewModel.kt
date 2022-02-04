@@ -3,15 +3,19 @@ package com.example.photosapp.overview
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.domain.Photo
-import com.example.usecases.photo.GetPhotosUseCase
-import com.example.usecases.photo.GetPhotosUseCaseImpl
+import com.example.usecases.photo.getphotos.GetPhotosUseCaseImpl
+import com.example.usecases.photo.insertphotos.InsertPhotosUseCaseImpl
 import kotlinx.coroutines.*
+import java.io.IOException
+import java.net.InetSocketAddress
+import java.net.Socket
 
 enum class ApiStatus { LOADING, ERROR, DONE }
 
 class OverviewViewModel(
     app: Application,
-    private val getPhotos: GetPhotosUseCaseImpl
+    private val getPhotos: GetPhotosUseCaseImpl,
+    private val insertPhotos: InsertPhotosUseCaseImpl
     //,
     //val getPhotos: GetPhotosUseCase
 ) : AndroidViewModel(app) {
@@ -62,9 +66,17 @@ class OverviewViewModel(
             if (listResult.size > 0) {
                     _photos.value = listResult.sortedBy { it.id }.reversed()
                 println("qwwwwwwwwwwwwww")
-//                    withContext(Dispatchers.IO) {
-//                        photoRepository.insertPhotos(listResult)
-//                    }
+                    withContext(Dispatchers.IO) {
+                        try {
+                            val socket = Socket()
+                            socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
+                            socket.close()
+                            println("fuck el estilo")
+                            insertPhotos(listResult)
+                            //photoRepository.insertPhotos(listResult)
+                        } catch (e: IOException) { }
+                       // photoRepository.insertPhotos(listResult)
+                    }
                 }
 
 
